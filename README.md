@@ -4,11 +4,12 @@
 
 This is a bank authentication task using python courtesy of zuri/ingressive internship
 
-## Installtion/How To Use
-- [Download & Install Python](https://www.python.org/downloads/)
+## Installtion / How To Use
+- [Download & Install Python3](https://www.python.org/downloads/)
 
 - To run program
-   ```python3 auth.py
+   ```sh
+    python3 auth.py
    ```
 
 ## References
