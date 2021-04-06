@@ -3,6 +3,11 @@ import json
 
 database = { }
 
+''' 
+    Note user logs in with email not account number
+'''
+
+
 #   Program entry or first operation
 def init():
 
@@ -100,19 +105,18 @@ def login():
         print("Invalid account details please login") 
         login()
 
-
 def bankOperation(user):
 
     print(f"Welcome {user[0]} {user[1]}")
 
-    print("Below are our available services \n  1) Withdrawal \n  2) Deposit \n  3) Complaint \n  4) Logout  \n 5) logout")
+    print("Below are our available services \n  1) Withdrawal \n  2) Deposit \n  3) Complaint \n  4) Logout  \n 5) Exit")
     
     option = int(input("Please select an option using any of the above index/number: \n "))
 
     if option == 1 :
         withdraw(user)
     elif option == 2:
-        deposit()
+        deposit(user)
     elif option == 3:
         complaint()
     elif option == 4:
@@ -159,27 +163,52 @@ def insertRecord():
     json.dump(new_output, database_file)
     database_file.close()   #   Close database file
 
+#   Function to edit or update user balance
+def updateRecord(user, balance):
+        #   Open json file as "writeonly" and update users records
+        database_file = open("dataBank.json", "r") 
+
+        new_output = {}
+    
+        output = database_file.read()
+        database_file.close()
+        #   Get existing record in dataBank file, convert to python dictionary for easy update
+        if len(output) == 0:
+            output = { } 
+        else:
+            new_output = json.loads(output) 
+
+        for value in new_output.values():
+            if value[1] == user[1]:
+                value[4] =  balance
+
+        database_file = open("dataBank.json", "w") 
+
+        #   Update dataBank content with current user balance
+        new_output.update(new_output)
+        json.dump(new_output, database_file)
+        database_file.close()   #   Close database file
 
 def withdraw(user):
-    balance = user[4]
+    balance = 0
     withdraw = int(input("How much would you like to withdraw? "))
 
-    if balance < withdraw:
+    if user[4] < withdraw: 
         print("Insufficient funds")
     else:
-        print(f"Take your cash: {user}")
-        balance -= withdraw
+        balance = user[4] - withdraw
 
-        # #   Open json file as "writeonly" and update users records
-        # database_file = open("dataBank.json", "w") #    Write to json database file if it exist
-        # new_output[user[]].update(database)
+        updateRecord(user, balance)
+        print(f"Take your cash: {withdraw}, current balance is {balance}")
 
-        # #   Update dataBank content with current user
-        # json.dump(new_output, database_file)
-        # database_file.close()   #   Close database file
+def deposit(user):
+    balance = 0
+    deposit = int(input("How much would you like to deposit? "))
+    balance = deposit + user[4]
 
-def deposit():
-    print("You are about to make a deposit")
+    updateRecord(user, balance)
+
+    print(f"Deposit was successful. Current balance is {balance}")
 
 def complaint():
     complaint = input("How may we serve you better? \n")
